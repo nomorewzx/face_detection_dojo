@@ -39,7 +39,6 @@ def load_and_align_data(image_paths, image_size, margin, gpu_memory_fraction):
 
         processed_img_list.append(processed_img)
 
-    print(len(img_list))
     images = np.stack(img_list)
     processed_imgs = np.stack(processed_img_list)
     return images, processed_imgs
@@ -72,8 +71,14 @@ def prewhiten(x):
 
 if __name__ == '__main__':
     img_dir = '~/MyProject/imgs/'
-    filename = 'test.jpg'
+    face_dir = '~/MyProject/imgs/faces/'
+    filename = 'many.jpg'
     filepath = os.path.join(img_dir, filename)
     save_file_path = os.path.join(img_dir, 'processed_'+filename)
-    face_images, processed_imgs = load_and_align_data([filepath],image_size=200, margin=5, gpu_memory_fraction=2.0)
+    face_images, processed_imgs = load_and_align_data([filepath],image_size=200, margin=5, gpu_memory_fraction=1.0)
     misc.imsave(os.path.expanduser(save_file_path), processed_imgs[0,:,:,:])
+    for i in range(len(face_images)):
+        face_file_path = os.path.join(face_dir, filename.split('.')[0] + '_' + str(i) +'.jpg')
+        misc.imsave(os.path.expanduser(face_file_path), face_images[i])
+    
+    print('{0} faces detected...'.format(len(face_images)))
