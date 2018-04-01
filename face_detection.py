@@ -4,8 +4,7 @@ import numpy as np
 import sys
 import os
 import align.detect_face
-
-LIGHT_GREEN_COLOR = np.array([0, 255, 0], dtype=np.uint8)
+from settings import *
 
 def load_and_align_data(image_paths, image_size, margin, gpu_memory_fraction):
 
@@ -16,7 +15,7 @@ def load_and_align_data(image_paths, image_size, margin, gpu_memory_fraction):
     print('Creating networks and loading parameters')
     with tf.Graph().as_default():
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_memory_fraction)
-        sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
+        sess = tf.Session()
         with sess.as_default():
             pnet, rnet, onet = align.detect_face.create_mtcnn(sess, None)
   
@@ -71,14 +70,14 @@ def prewhiten(x):
 
 if __name__ == '__main__':
     img_dir = '~/MyProject/imgs/'
-    face_dir = '~/MyProject/imgs/faces/'
-    filename = 'many.jpg'
-    filepath = os.path.join(img_dir, filename)
-    save_file_path = os.path.join(img_dir, 'processed_'+filename)
-    face_images, processed_imgs = load_and_align_data([filepath],image_size=200, margin=5, gpu_memory_fraction=1.0)
-    misc.imsave(os.path.expanduser(save_file_path), processed_imgs[0,:,:,:])
-    for i in range(len(face_images)):
-        face_file_path = os.path.join(face_dir, filename.split('.')[0] + '_' + str(i) +'.jpg')
-        misc.imsave(os.path.expanduser(face_file_path), face_images[i])
+    print('loading...')
+    # filename = 'many.jpg'
+    # filepath = os.path.join(img_dir, filename)
+    # save_file_path = os.path.join(img_dir, 'processed_'+filename)
+    # face_images, processed_imgs = load_and_align_data([filepath],image_size=160, margin=5, gpu_memory_fraction=1.0)
+    # misc.imsave(os.path.expanduser(save_file_path), processed_imgs[0,:,:,:])
+    # for i in range(len(face_images)):
+    #     face_file_path = os.path.join(FACE_DIR, filename.split('.')[0] + '_' + str(i) +'.jpg')
+    #     misc.imsave(os.path.expanduser(face_file_path), face_images[i])
+    # print('{0} faces detected...'.format(len(face_images)))
     
-    print('{0} faces detected...'.format(len(face_images)))
