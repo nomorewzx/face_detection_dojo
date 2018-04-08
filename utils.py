@@ -29,8 +29,7 @@ def load_model_into_tf_session(model):
 def get_model_filenames(model_dir):
     files = os.listdir(model_dir)
     meta_files = [s for s in files if s.endswith('.meta')]
-    print('=====================================')
-    print(meta_files)
+
     if len(meta_files)==0:
         raise ValueError('No meta file found in the model directory (%s)' % model_dir)
     elif len(meta_files)>1:
@@ -56,11 +55,11 @@ def load_labeled_faces():
     face_imgs = []
     names = []
 
-    face_paths = list(Path(os.path.expanduser(FACE_DIR)).glob('**/*.jpg'))
-    for filename in face_paths:
+    identity_paths = list(Path(os.path.expanduser(FACE_DIR)).glob('**/*.jpg'))
+    for filename in identity_paths:
         name = os.path.basename(str(filename)).split('.')[0]
         face_img = misc.imread(filename)
         names.append(name)
         face_imgs.append(face_img)
-    
+
     return names, face_imgs

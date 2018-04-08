@@ -6,7 +6,7 @@ import os
 import align.detect_face
 from settings import *
 
-def load_and_align_data(image_paths, image_size, margin, gpu_memory_fraction):
+def load_and_align_data(image_paths, image_size, margin):
 
     minsize = 20 # minimum size of face
     threshold = [ 0.6, 0.7, 0.7 ]  # three steps's threshold
@@ -14,7 +14,6 @@ def load_and_align_data(image_paths, image_size, margin, gpu_memory_fraction):
     
     print('Creating networks and loading parameters')
     with tf.Graph().as_default():
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_memory_fraction)
         sess = tf.Session()
         with sess.as_default():
             pnet, rnet, onet = align.detect_face.create_mtcnn(sess, None)
@@ -69,9 +68,9 @@ def prewhiten(x):
     return y
 
 if __name__ == '__main__':
-    img_dir = '~/MyProject/imgs/'
+    img_dir = '/home/zeks/MyProject/imgs/faces/real_face'
     print('loading...')
-    # filename = 'many.jpg'
+    # filename = 'danping.jpg'
     # filepath = os.path.join(img_dir, filename)
     # save_file_path = os.path.join(img_dir, 'processed_'+filename)
     # face_images, processed_imgs = load_and_align_data([filepath],image_size=160, margin=5, gpu_memory_fraction=1.0)
@@ -80,4 +79,4 @@ if __name__ == '__main__':
     #     face_file_path = os.path.join(FACE_DIR, filename.split('.')[0] + '_' + str(i) +'.jpg')
     #     misc.imsave(os.path.expanduser(face_file_path), face_images[i])
     # print('{0} faces detected...'.format(len(face_images)))
-    
+    #

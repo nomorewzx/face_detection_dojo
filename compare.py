@@ -6,10 +6,10 @@ from scipy import misc
 from settings import *
 import os
 
-def compare(model_path, image_files, image_size, margin, gpu_memory_fraction):
+def compare(model_path, image_files, image_size, margin):
     names, face_imgs = load_labeled_faces()
     result_dir  = os.path.expanduser(RESULT_DIR)
-    faces_to_identify, processed_image = load_and_align_data(image_files, image_size, margin, gpu_memory_fraction)
+    faces_to_identify, processed_image = load_and_align_data(image_files, image_size, margin)
     with tf.Graph().as_default():
         with tf.Session() as sess:
             load_model_into_tf_session(model_path)
@@ -39,7 +39,7 @@ def main():
 if __name__ == '__main__':
     model_path = '~/MyProject/pre_trained_models/20170511-185253/'
 
-    image_files = ['~/MyProject/imgs/many_small.jpg']
+    image_files = ['~/MyProject/imgs/to_detect/zhaoshaoyi_1.jpg']
 
     image_size = 160
 
@@ -47,4 +47,4 @@ if __name__ == '__main__':
 
     gpu_memory_fraction = 1.0
 
-    compare(model_path, image_files, image_size, margin, gpu_memory_fraction)
+    compare(model_path, image_files, image_size, margin)
