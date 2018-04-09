@@ -52,14 +52,10 @@ def get_model_filenames(model_dir):
 
 
 def load_labeled_faces():
-    face_imgs = []
-    names = []
 
-    identity_paths = list(Path(os.path.expanduser(FACE_DIR)).glob('**/*.jpg'))
-    for filename in identity_paths:
-        name = os.path.basename(str(filename)).split('.')[0]
-        face_img = misc.imread(filename)
-        names.append(name)
-        face_imgs.append(face_img)
+    identity_img_paths = list(Path(os.path.expanduser(FACE_DIR)).glob('**/*.jpg'))
 
-    return names, face_imgs
+    names = [os.path.basename(str(img_path)).split('.')[0] for img_path in identity_img_paths]
+    str_paths = [posix_path.as_posix() for posix_path in identity_img_paths]
+    print(list(identity_img_paths))
+    return names, str_paths

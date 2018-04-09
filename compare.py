@@ -4,12 +4,16 @@ import tensorflow as tf
 import numpy as np
 from scipy import misc
 from settings import *
-import os
+import argparse
+import sys
 
-def compare(model_path, image_files, image_size, margin):
-    names, face_imgs = load_labeled_faces()
-    result_dir  = os.path.expanduser(RESULT_DIR)
-    faces_to_identify, processed_image = load_and_align_data(image_files, image_size, margin)
+
+def compare(model_path, to_recognize_image_file, image_size, margin):
+    names, identity_img_paths = load_labeled_faces()
+
+    face_imgs, _ = load_and_align_data(identity_img_paths, image_size, margin)
+
+    faces_to_identify, _ = load_and_align_data([to_recognize_image_file], image_size, margin)
     with tf.Graph().as_default():
         with tf.Session() as sess:
             load_model_into_tf_session(model_path)
@@ -24,27 +28,34 @@ def compare(model_path, image_files, image_size, margin):
 
             face_embeddings = sess.run(embedding_op, feed_dict = feed_dict)
 
-            face_to_identify_embeddings = sess.run(embedding_op, feed_dict = {imgs_placeholder: faces_to_identify, phase_train_placeholder: False})
+            face_to_recognize_embeddings = sess.run(embedding_op, feed_dict = {imgs_placeholder: faces_to_identify, phase_train_placeholder: False})
 
 
-            for i in range(face_to_identify_embeddings.shape[0]):
-                dist = np.sqrt(np.sum(np.square(np.subtract(face_to_identify_embeddings[i,:], face_embeddings)), axis=1))
-                index = np.argmax(dist)
-                print(names[index])
-                misc.imsave(os.path.join(result_dir, names[index]+'_'+str(i)+'.jpg'), faces_to_identify[i])
+            for i in range(face_to_recognize_embeddings.shape[0]):
+                dist = np.sqrt(np.sum(np.square(np.subtract(face_to_recognize_embeddings[i,:], face_embeddings)), axis=1))
+                print('Distance Matrix')
+                print(' ', end='')
+                for name in names:
+                    print(' ' + name + ' ', end='')
+                print('')
+                print(' ', end='')
+                for m in range(dist.shape[0]):
+                    print(' %1.4f   ' % dist[m], end='')
+                print('')
+                index = np.argmin(dist)
+                print('this is most likely:    ' + names[index])
+                # misc.imsave(os.path.join(result_dir, names[index]+'_'+str(i)+'.jpg'), faces_to_identify[i])
 
-def main():
-    pass
+def main(args):
+    compare(args.model, args.image_file, 160, 5)
+
+def parse_arguments(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('model', type=str, help='Directory contains the model ckpt file')
+    parser.add_argument('image_file', type=str, help='Image to recognize')
+
+    return parser.parse_args(argv)
 
 if __name__ == '__main__':
-    model_path = '~/MyProject/pre_trained_models/20170511-185253/'
-
-    image_files = ['~/MyProject/imgs/to_detect/zhaoshaoyi_1.jpg']
-
-    image_size = 160
-
-    margin = 5
-
-    gpu_memory_fraction = 1.0
-
-    compare(model_path, image_files, image_size, margin)
+    main(parse_arguments(sys.argv[1:]))
+    # command with param: python compare.py ~/model_dir ~/MyProject/imgs/faces/real_face/img_to_recognize.jpg

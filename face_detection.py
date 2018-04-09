@@ -17,20 +17,17 @@ def load_and_align_data(image_paths, image_size, margin):
         sess = tf.Session()
         with sess.as_default():
             pnet, rnet, onet = align.detect_face.create_mtcnn(sess, None)
-  
-    tmp_image_paths = image_paths.copy()
 
-    img_list = []
     processed_img_list = []
-    for image in tmp_image_paths:
-        img = misc.imread(os.path.expanduser(image), mode='RGB')
+    tmp_image_paths = image_paths.copy()
+    img_list = []
+    for image_path in tmp_image_paths:
+        img = misc.imread(os.path.expanduser(image_path), mode='RGB')
         processed_img = img.copy()
         img_size = np.asarray(img.shape)[0:2]
         bounding_boxes, _ = align.detect_face.detect_face(img, minsize, pnet, rnet, onet, threshold, factor)
         if len(bounding_boxes) < 1:
-          image_paths.remove(image)
-          print("can't detect face, remove ", image)
-          continue
+            print("can't detect face")
         for bb in bounding_boxes:
             prewhitened = get_prewhitenned_face_img(bb, image_size, img, img_size, margin, processed_img)
             img_list.append(prewhitened)
@@ -70,13 +67,3 @@ def prewhiten(x):
 if __name__ == '__main__':
     img_dir = '/home/zeks/MyProject/imgs/faces/real_face'
     print('loading...')
-    # filename = 'danping.jpg'
-    # filepath = os.path.join(img_dir, filename)
-    # save_file_path = os.path.join(img_dir, 'processed_'+filename)
-    # face_images, processed_imgs = load_and_align_data([filepath],image_size=160, margin=5, gpu_memory_fraction=1.0)
-    # misc.imsave(os.path.expanduser(save_file_path), processed_imgs[0,:,:,:])
-    # for i in range(len(face_images)):
-    #     face_file_path = os.path.join(FACE_DIR, filename.split('.')[0] + '_' + str(i) +'.jpg')
-    #     misc.imsave(os.path.expanduser(face_file_path), face_images[i])
-    # print('{0} faces detected...'.format(len(face_images)))
-    #
