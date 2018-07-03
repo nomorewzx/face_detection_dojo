@@ -1,11 +1,11 @@
-from face_detection import load_and_align_data
-from utils import load_model_into_tf_session, load_labeled_faces
-import tensorflow as tf
-import numpy as np
-from scipy import misc
-from settings import *
 import argparse
 import sys
+
+import tensorflow as tf
+
+from face_detection import load_and_align_data
+from settings import *
+from utils import load_model_into_tf_session, load_labeled_faces
 
 
 def compare(model_path, to_recognize_image_file, image_size, margin):
