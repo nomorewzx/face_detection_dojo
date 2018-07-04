@@ -164,11 +164,11 @@ class Network(object):
             return output
 
     @layer
-    def prelu(self, inp, name):
+    def prelu(self, layer_input, name):
         with tf.variable_scope(name):
-            i = int(inp.get_shape()[-1])
+            i = int(layer_input.get_shape()[-1])
             alpha = self.make_var('alpha', shape=(i,))
-            output = tf.nn.relu(inp) + tf.multiply(alpha, -tf.nn.relu(-inp))
+            output = tf.nn.relu(layer_input) + tf.multiply(alpha, -tf.nn.relu(-layer_input))
         return output
 
     @layer
