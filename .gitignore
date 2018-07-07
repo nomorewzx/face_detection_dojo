@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 .idea/
+debug_result/*.jpg
+debug_result/boxed_faces/*.jpg
+test_images/*.jpg
