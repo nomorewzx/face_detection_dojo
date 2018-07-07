@@ -89,7 +89,7 @@ def prewhiten(x):
 
 
 if __name__ == '__main__':
-    image_path = os.path.join(os.path.dirname(__file__), '../test_images/test_crowds.jpg')
+    image_path = os.path.join(os.path.dirname(__file__), '../test_images/test.jpg')
     img_path_list = [image_path]
 
     face_images = load_face_imgs_from_images(img_path_list, 160, 10)
