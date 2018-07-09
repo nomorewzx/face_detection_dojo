@@ -15,11 +15,15 @@ To run this feature on terminal, using commands below:
 
 Or you can simply open `verification/face_detection.py` file in PyCharm and run this script.
 
-What this script does is to find `test.jpg` in `face_detect_dojo/test_images/` and try to detect the faces (if any) in the image. So please make sure there is an image named `test.jpg` in the dir.
+What this script does is to find `test.jpg` in `face_detect_dojo/resources/test_images/` and try to detect the faces (if any) in the image. So please make sure there is an image named `test.jpg` in the dir.
 
-You can see the detection and alignment result in dir `face_detect_dojo/debug_result/boxed_faces/`, in which an image file whose name starts with `BoxedFaces` will exist.
+You can see the detection and alignment result in dir `face_detect_dojo/resources/debug_result/boxed_faces/`, in which an image file whose name starts with `BoxedFaces` will exist.
 
 ## Face verification (compare) (Doing)
 
 This feature is still on going.
+
+
+## P.S.
+1. Visiualize MTCNN Model. By setting `DEBUG_TENSORFLOW_GRAPH = True` in `settings.py`, and running Face Detection code as said above, you can visiualize MTCNN Model graph by typing command `tensorboard --logdir=face_detection_dojo/resources/event_log`
 
