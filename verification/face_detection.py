@@ -7,7 +7,7 @@ from align import mtcnn
 from settings import *
 
 
-def load_face_imgs_from_images(abs_image_paths, face_img_size, margin):
+def detect_faces_from_images(abs_image_paths, face_img_size, margin):
     minsize = 20  # minimum size of face
     threshold = [0.6, 0.7, 0.7]  # three steps's threshold
     factor = 0.709  # scale factor
@@ -20,6 +20,9 @@ def load_face_imgs_from_images(abs_image_paths, face_img_size, margin):
 
     tmp_image_paths = abs_image_paths.copy()
     face_images = []
+    original_imgs_with_bbox = []
+
+    original_imgs_no_face = []
 
     for image_path in tmp_image_paths:
         raw_img = misc.imread(image_path, mode='RGB')
@@ -29,7 +32,9 @@ def load_face_imgs_from_images(abs_image_paths, face_img_size, margin):
         bounding_boxes, _ = mtcnn.detect_face(raw_img, minsize, pnet, rnet, onet, threshold, factor)
 
         if len(bounding_boxes) < 1:
+            original_imgs_no_face.append(raw_img_copy)
             print("can't detect face")
+            continue
 
         for bounding_box in bounding_boxes:
             prewhitened_face = prewhiten_face_img(bounding_box, face_img_size, raw_img, margin)
@@ -37,9 +42,12 @@ def load_face_imgs_from_images(abs_image_paths, face_img_size, margin):
 
         if DEBUG_FACE_DETECT is True:
             mark_box_around_faces(bounding_boxes=bounding_boxes, margin=margin, raw_image=raw_img_copy)
+            print('find {} faces in image'.format(len(bounding_boxes)))
+            original_imgs_with_bbox.append(raw_img_copy)
 
     face_images = np.stack(face_images)
-    return face_images
+
+    return face_images, original_imgs_with_bbox, original_imgs_no_face
 
 
 def mark_box_around_faces(bounding_boxes, margin, raw_image):
@@ -57,8 +65,6 @@ def mark_box_around_faces(bounding_boxes, margin, raw_image):
         raw_image[bb[3] - margin:bb[3], bb[0]:bb[2], :] = LIGHT_GREEN_COLOR_NUMPY_ARRAY
         raw_image[bb[1]:bb[3], bb[0] - margin: bb[0], :] = LIGHT_GREEN_COLOR_NUMPY_ARRAY
         raw_image[bb[1]:bb[3], bb[2] - margin:bb[2], :] = LIGHT_GREEN_COLOR_NUMPY_ARRAY
-
-    misc.imsave(os.path.join(DEBUG_RESULT_BOXED_FACE_DIR, 'BoxedFaces_' + str(uuid.uuid1()) + '.jpg'), raw_image)
 
 
 def prewhiten_face_img(bounding_box, face_image_size, raw_image, margin):
@@ -89,9 +95,32 @@ def prewhiten(x):
 
 
 if __name__ == '__main__':
-    image_path = os.path.join(os.path.dirname(__file__), '../resources/test_images/test.jpg')
-    img_path_list = [image_path]
+    import os
+    img_dir = os.path.join(RESOURCE_BASE_DIR, 'test_images')
+    img_path_list = []
+    file_names = os.listdir(img_dir)
+    for file_name in file_names:
+        if file_name.endswith('.jpg'):
+            img_path_list.append(os.path.join(img_dir, file_name))
 
-    face_images = load_face_imgs_from_images(img_path_list, 160, 10)
+    import time
+    start = time.time()
 
-    print(face_images.shape)
+    face_images, original_imgs_with_bbox, original_imgs_no_face = detect_faces_from_images(img_path_list, 160, 10)
+
+    end = time.time()
+
+    for original_img_with_bbox in original_imgs_with_bbox:
+        img_name = 'BoxedFaces_' + str(uuid.uuid1()) + '.jpg'
+        print('detect faces and save img to {}'.format(img_name))
+
+        misc.imsave(os.path.join(RESOURCE_BASE_DIR, 'new_boxed_faces',img_name),
+                    original_img_with_bbox)
+
+    for original_imgs_no_face in original_imgs_no_face:
+        print('can not find faces in image')
+        misc.imsave(os.path.join(RESOURCE_BASE_DIR, 'no_face_imgs','NoFaces_' + str(uuid.uuid1()) + '.jpg'),
+                    original_imgs_no_face)
+
+    print('takes {} ms to detect faces in {} images'.format((end - start) * 1000, len(img_path_list)))
+    print('there are {} imgs with faces and {} imgs without faces'.format(len(original_imgs_with_bbox), len(original_imgs_no_face)))

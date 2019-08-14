@@ -9,6 +9,8 @@ RESOURCE_BASE_DIR = os.path.join(os.path.dirname(__file__), 'resources')
 # DEBUG RESULT DIR CONFIG
 DEBUG_RESULT_BASE_DIR = os.path.join(RESOURCE_BASE_DIR, './debug_result/')
 DEBUG_RESULT_BOXED_FACE_DIR = os.path.join(DEBUG_RESULT_BASE_DIR, 'boxed_faces')
+DEBUG_RESULT_NO_FACE_DIR = os.path.join(DEBUG_RESULT_BASE_DIR, 'no_face_imgs')
+
 DEBUG_RESULT_LOADED_FACES_DIR = os.path.join(DEBUG_RESULT_BASE_DIR, 'loaded_faces')
 
 # TENSORFLOW EVENT LOG DIR

@@ -3,7 +3,7 @@ import sys
 
 import tensorflow as tf
 
-from verification.face_detection import load_face_imgs_from_images
+from verification.face_detection import detect_faces_from_images
 from settings import *
 from utils import load_model_into_tf_session, load_labeled_faces
 
@@ -11,9 +11,9 @@ from utils import load_model_into_tf_session, load_labeled_faces
 def compare(model_path, to_recognize_image_file, face_img_size, margin):
     names, identity_img_paths = load_labeled_faces()
 
-    face_imgs = load_face_imgs_from_images(identity_img_paths, face_img_size, margin)
+    face_imgs = detect_faces_from_images(identity_img_paths, face_img_size, margin)
 
-    faces_to_identify = load_face_imgs_from_images([to_recognize_image_file], face_img_size, margin)
+    faces_to_identify = detect_faces_from_images([to_recognize_image_file], face_img_size, margin)
 
     with tf.Graph().as_default():
         with tf.Session() as sess:
