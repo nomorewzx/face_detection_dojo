@@ -7,4 +7,4 @@ pyparsing==2.2.0
 scikit-learn
 scipy==1.0.0
 six==1.11.0
-tensorflow-gpu==1.4.1
+tensorflow-gpu==1.15.0
