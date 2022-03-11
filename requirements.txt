@@ -1,7 +1,7 @@
 backports.weakref==1.0rc1
 numpy
 opencv-python
-Pillow==4.3.0
+Pillow==9.0.1
 protobuf==3.5.1
 pyparsing==2.2.0
 scikit-learn
